@@ -1,6 +1,6 @@
 // ─── SUPABASE ───
-const SB_URL = 'https://eofgwpdvffzngcmahris.supabase.co';
-const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVvZmd3cGR2ZmZ6bmdjbWFocmlzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAzNzg5NTgsImV4cCI6MjA5NTk1NDk1OH0.qoMsoLFjEAIEKUl6j6Ml8-7Zper8kNkEu5a9dduq5os';
+const SUPABASE_URL = 'https://eofgwpdvffzngcmahris.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVvZmd3cGR2ZmZ6bmdjbWFocmlzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAzNzg5NTgsImV4cCI6MjA5NTk1NDk1OH0.qoMsoLFjEAIEKUl6j6Ml8-7Zper8kNkEu5a9dduq5os';
 let sb = null;
 try { sb = supabase.createClient(SB_URL, SB_KEY); } catch(e) {}
 
