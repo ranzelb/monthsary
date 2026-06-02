@@ -3,7 +3,10 @@ const SB_URL = 'https://eofgwpdvffzngcmahris.supabase.co';
 const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVvZmd3cGR2ZmZ6bmdjbWFocmlzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAzNzg5NTgsImV4cCI6MjA5NTk1NDk1OH0.qoMsoLFjEAIEKUl6j6Ml8-7Zper8kNkEu5a9dduq5os';
 let sb = null;
 try {
-  sb = supabase.createClient(SB_URL, SB_KEY);
+  // UMD build exposes window.supabase; the .createClient is a named export on that object
+  const supabaseLib = window.supabase;
+  if (!supabaseLib) throw new Error('supabase global not found — check CDN script tag');
+  sb = supabaseLib.createClient(SB_URL, SB_KEY);
   console.log('✅ Supabase client ready');
 } catch(e) {
   console.error('❌ Supabase init failed:', e);
