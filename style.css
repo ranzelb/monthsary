@@ -62,7 +62,7 @@ body{font-family:var(--fi);background:var(--deep);}
 /* ═══ LOADING (from old.html) ═══ */
 #loading-screen{
   background:radial-gradient(ellipse at 50% 40%,#ff85ad 0%,#e8527a 40%,#c4356a 70%,#8b1a3e 100%);
-  flex-direction:column;align-items:center;justify-content:center;overflow:hidden;position:relative;
+  flex-direction:column;align-items:center;justify-content:center;overflow:hidden;
 }
 .loading-clouds{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
 .loading-cloud{position:absolute;border-radius:50%;background:rgba(255,255,255,0.12);filter:blur(30px);animation:cloudDrift linear infinite;}
