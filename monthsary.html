@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ranz ♡ Kate — Our Story</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+<canvas id="fw"></canvas>
+
+<!-- ══════════════ PIN ══════════════ -->
+<div id="pin-screen" class="screen active">
+  <div class="pin-petals" id="pin-petals"></div>
+  <div class="pin-card" id="pin-card">
+    <span class="pin-icon">🔐</span>
+    <div class="pin-title">Enter Our Secret</div>
+    <div class="pin-hint">A little code only we know~</div>
+    <div class="pin-dots">
+      <div class="pin-dot" id="pd0"></div>
+      <div class="pin-dot" id="pd1"></div>
+      <div class="pin-dot" id="pd2"></div>
+      <div class="pin-dot" id="pd3"></div>
+    </div>
+    <div class="pin-pad">
+      <button class="pin-btn" onclick="pp('1')">1</button>
+      <button class="pin-btn" onclick="pp('2')">2</button>
+      <button class="pin-btn" onclick="pp('3')">3</button>
+      <button class="pin-btn" onclick="pp('4')">4</button>
+      <button class="pin-btn" onclick="pp('5')">5</button>
+      <button class="pin-btn" onclick="pp('6')">6</button>
+      <button class="pin-btn" onclick="pp('7')">7</button>
+      <button class="pin-btn" onclick="pp('8')">8</button>
+      <button class="pin-btn" onclick="pp('9')">9</button>
+      <button class="pin-btn" onclick="pd()" style="font-size:1rem">⌫</button>
+      <button class="pin-btn zero" onclick="pp('0')">0</button>
+      <button class="pin-btn" onclick="pc()" style="font-size:1rem">✕</button>
+    </div>
+    <div class="pin-err" id="pin-err">💔 Not quite, try again~</div>
+  </div>
+</div>
+
+<!-- ══════════════ LOADING ══════════════ -->
+<div id="loading-screen" class="screen">
+  <div class="loading-clouds" id="loading-clouds"></div>
+
+  <div class="loading-cat-wrap">
+    <div class="loading-sparkle-ring" id="sparkle-ring">
+      <span style="top:-8px;left:50%;transform:translateX(-50%)">✨</span>
+      <span style="top:50%;right:-10px;transform:translateY(-50%)">🌸</span>
+      <span style="bottom:-8px;left:50%;transform:translateX(-50%)">✨</span>
+      <span style="top:50%;left:-10px;transform:translateY(-50%)">🌸</span>
+    </div>
+    <div class="loading-cat" id="loading-cat">🐱</div>
+  </div>
+
+  <div class="loading-percent" id="loading-percent">0%</div>
+  <div class="loading-text" id="loading-text">Preparing a surprise for you... 🌸</div>
+
+  <div class="loading-bar-container">
+    <div class="loading-bar" id="loading-bar-el"></div>
+  </div>
+</div>
+
+<!-- ══════════════ DOOR CINEMATIC ══════════════ -->
+<div id="door-screen" class="screen">
+
+  <!-- Deep garden background -->
+  <div class="door-bg-garden" id="door-bg"></div>
+
+  <!-- Bokeh glows injected by JS -->
+
+  <!-- Perspective stone path -->
+  <div class="door-path"></div>
+  <div class="door-ground"></div>
+
+  <!-- ══ LEFT GARDEN BED (stays full-size, outside zoom) ══ -->
+  <div class="garden-left" id="garden-left">
+    <div class="garden-arch"></div>
+    <div class="garden-trellis"></div>
+    <div class="garden-vine-top"></div>
+    <div class="garden-lantern" style="animation-delay:0s">🏮</div>
+    <div class="garden-roses" style="left:20%">
+      <span style="animation-duration:3.2s;animation-delay:0s">🌸</span><span style="animation-duration:3.8s;animation-delay:0.3s">🌿</span>
+      <span style="animation-duration:3.5s;animation-delay:0.6s">🌺</span><span style="animation-duration:4s;animation-delay:0.9s">🌸</span>
+      <span style="animation-duration:3.3s;animation-delay:1.2s">🌿</span><span style="animation-duration:3.7s;animation-delay:1.5s">🌷</span>
+      <span style="animation-duration:4.1s;animation-delay:1.8s">🌸</span><span style="animation-duration:3.6s;animation-delay:2.1s">🌺</span>
+    </div>
+    <div class="garden-roses-2" style="left:55%">
+      <span style="animation-duration:4.2s;animation-delay:0.5s">🌷</span><span style="animation-duration:3.4s;animation-delay:0.8s">🌸</span>
+      <span style="animation-duration:3.9s;animation-delay:1.1s">💮</span><span style="animation-duration:3.2s;animation-delay:1.4s">🌺</span>
+      <span style="animation-duration:4.4s;animation-delay:1.7s">🌸</span><span style="animation-duration:3.6s;animation-delay:2s">🌿</span>
+      <span style="animation-duration:3.8s;animation-delay:2.3s">🌷</span>
+    </div>
+    <div class="garden-feature-flowers" style="left:35%">
+      <span style="animation-delay:0.2s">🌺</span><span style="animation-delay:0.7s">🌸</span>
+      <span style="animation-delay:1.2s">🌷</span><span style="animation-delay:1.7s">💐</span>
+    </div>
+    <div class="garden-ground-flowers">
+      <span style="animation-delay:0s">🌸</span><span style="animation-delay:0.4s">🌺</span><span style="animation-delay:0.8s">🌷</span><span style="animation-delay:1.2s">🌸</span>
+      <span style="animation-delay:1.6s">💮</span><span style="animation-delay:2s">🌺</span><span style="animation-delay:0.3s">🌸</span><span style="animation-delay:0.9s">🌷</span>
+    </div>
+    <div class="garden-pots"><span style="animation-delay:0s">🪴</span><span style="animation-delay:0.8s">🌷</span><span style="animation-delay:1.6s">🪴</span></div>
+    <div class="garden-roses-3" style="left:78%">
+      <span style="animation-duration:3.9s;animation-delay:0.3s">🌺</span><span style="animation-duration:3.4s;animation-delay:0.7s">🌷</span>
+      <span style="animation-duration:4.2s;animation-delay:1.1s">🌸</span><span style="animation-duration:3.6s;animation-delay:1.5s">💮</span>
+      <span style="animation-duration:4s;animation-delay:1.9s">🌺</span><span style="animation-duration:3.5s;animation-delay:2.3s">🌸</span>
+      <span style="animation-duration:3.7s;animation-delay:0.6s">🌷</span><span style="animation-duration:4.3s;animation-delay:1.0s">🌺</span>
+      <span style="animation-duration:3.3s;animation-delay:1.4s">🌸</span>
+    </div>
+    <div class="garden-scatter" style="top:22%;left:8%;animation-duration:3.8s;animation-delay:0.4s">🌸</div>
+    <div class="garden-scatter" style="top:30%;left:68%;animation-duration:4.1s;animation-delay:0.9s">🌺</div>
+    <div class="garden-scatter" style="top:42%;left:12%;animation-duration:3.5s;animation-delay:1.3s">🌷</div>
+    <div class="garden-scatter" style="top:50%;left:74%;animation-duration:4.4s;animation-delay:0.2s">💮</div>
+    <div class="garden-scatter" style="top:62%;left:5%;animation-duration:3.2s;animation-delay:1.7s">🌸</div>
+    <div class="garden-scatter" style="top:70%;left:62%;animation-duration:3.9s;animation-delay:0.8s">🌺</div>
+    <div class="garden-scatter" style="top:15%;left:44%;animation-duration:4.2s;animation-delay:1.5s">🌷</div>
+    <div class="garden-scatter" style="top:78%;left:38%;animation-duration:3.7s;animation-delay:2.1s">🌸</div>
+    <div class="garden-cat" style="left:15%;animation-delay:0s">😺</div>
+  </div>
+
+  <!-- ══ RIGHT GARDEN BED (stays full-size, outside zoom) ══ -->
+  <div class="garden-right" id="garden-right">
+    <div class="garden-arch"></div>
+    <div class="garden-trellis"></div>
+    <div class="garden-vine-top"></div>
+    <div class="garden-lantern" style="animation-delay:1.8s">🏮</div>
+    <div class="garden-roses" style="right:20%;left:auto">
+      <span style="animation-duration:3.6s;animation-delay:0.4s">🌺</span><span style="animation-duration:3.3s;animation-delay:0.7s">🌸</span>
+      <span style="animation-duration:4.1s;animation-delay:1s">🌿</span><span style="animation-duration:3.7s;animation-delay:1.3s">🌷</span>
+      <span style="animation-duration:3.4s;animation-delay:1.6s">🌸</span><span style="animation-duration:4.3s;animation-delay:1.9s">🌺</span>
+      <span style="animation-duration:3.9s;animation-delay:2.2s">🌸</span><span style="animation-duration:3.5s;animation-delay:2.5s">🌿</span>
+    </div>
+    <div class="garden-roses-2" style="right:55%;left:auto">
+      <span style="animation-duration:3.8s;animation-delay:0.2s">💮</span><span style="animation-duration:4s;animation-delay:0.5s">🌷</span>
+      <span style="animation-duration:3.5s;animation-delay:0.8s">🌸</span><span style="animation-duration:3.2s;animation-delay:1.1s">🌺</span>
+      <span style="animation-duration:4.5s;animation-delay:1.4s">🌸</span><span style="animation-duration:3.7s;animation-delay:1.7s">🌿</span>
+      <span style="animation-duration:3.9s;animation-delay:2s">🌷</span>
+    </div>
+    <div class="garden-feature-flowers" style="right:35%;left:auto">
+      <span style="animation-delay:0.5s">🌸</span><span style="animation-delay:1s">💐</span>
+      <span style="animation-delay:1.5s">🌺</span><span style="animation-delay:2s">🌷</span>
+    </div>
+    <div class="garden-ground-flowers">
+      <span style="animation-delay:0.2s">🌷</span><span style="animation-delay:0.6s">🌸</span><span style="animation-delay:1s">💮</span><span style="animation-delay:1.4s">🌺</span>
+      <span style="animation-delay:1.8s">🌸</span><span style="animation-delay:0.4s">🌷</span><span style="animation-delay:1.1s">🌸</span><span style="animation-delay:2.2s">🌺</span>
+    </div>
+    <div class="garden-pots"><span style="animation-delay:1.2s">🌺</span><span style="animation-delay:0.4s">🪴</span><span style="animation-delay:2s">🌷</span></div>
+    <div class="garden-roses-3" style="right:78%;left:auto">
+      <span style="animation-duration:4s;animation-delay:0.5s">🌸</span><span style="animation-duration:3.5s;animation-delay:0.9s">🌺</span>
+      <span style="animation-duration:4.3s;animation-delay:1.3s">🌷</span><span style="animation-duration:3.7s;animation-delay:1.7s">💮</span>
+      <span style="animation-duration:3.3s;animation-delay:2.1s">🌸</span><span style="animation-duration:4.1s;animation-delay:0.4s">🌺</span>
+      <span style="animation-duration:3.6s;animation-delay:0.8s">🌷</span><span style="animation-duration:4.4s;animation-delay:1.2s">🌸</span>
+      <span style="animation-duration:3.8s;animation-delay:1.6s">💮</span>
+    </div>
+    <div class="garden-scatter" style="top:22%;right:8%;animation-duration:4s;animation-delay:0.6s">🌷</div>
+    <div class="garden-scatter" style="top:30%;right:70%;animation-duration:3.6s;animation-delay:1.1s">🌸</div>
+    <div class="garden-scatter" style="top:42%;right:10%;animation-duration:4.3s;animation-delay:0.3s">🌺</div>
+    <div class="garden-scatter" style="top:50%;right:76%;animation-duration:3.4s;animation-delay:1.6s">🌸</div>
+    <div class="garden-scatter" style="top:62%;right:4%;animation-duration:4.1s;animation-delay:0.9s">💮</div>
+    <div class="garden-scatter" style="top:70%;right:64%;animation-duration:3.8s;animation-delay:2s">🌺</div>
+    <div class="garden-scatter" style="top:18%;right:46%;animation-duration:3.5s;animation-delay:1.4s">🌸</div>
+    <div class="garden-cat" style="right:15%;animation-delay:2.5s">🐱</div>
+  </div>
+
+  <!-- ══ ZOOM CONTAINER — only the door zooms ══ -->
+  <div class="door-scene" id="door-scene">
+    <div class="door-wall">
+      <div class="door-side-flowers left">
+        <span style="animation-delay:0s">🌸</span><span style="animation-delay:0.3s">🌿</span>
+        <span style="animation-delay:0.6s">🌺</span><span style="animation-delay:0.9s">🌸</span>
+        <span style="animation-delay:1.2s">🌷</span><span style="animation-delay:1.5s">🌿</span>
+        <span style="animation-delay:1.8s">🌸</span>
+      </div>
+
+      <div class="door-frame" id="the-door">
+        <div class="door-panel-top"></div>
+        <div class="door-panel-bot"></div>
+        <div class="door-heart-wreath">🌸💕🌸</div>
+        <div class="door-knob"></div>
+        <div class="door-light" id="door-light"></div>
+      </div>
+
+      <div class="door-side-flowers right">
+        <span style="animation-delay:0.2s">🌷</span><span style="animation-delay:0.5s">🌿</span>
+        <span style="animation-delay:0.8s">🌸</span><span style="animation-delay:1.1s">🌺</span>
+        <span style="animation-delay:1.4s">🌸</span><span style="animation-delay:1.7s">🌿</span>
+        <span style="animation-delay:2s">🌷</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Celebration + stars + flash (all outside zoom) -->
+  <div class="door-celebration" id="door-celebration">
+    <div class="door-celebration-title">Happy 1st Monthsary,<br>My Love ❤️</div>
+    <div class="door-celebration-sub">~ A magical world, made just for you ~</div>
+    <div class="door-celebration-hearts">💗 💕 💖 💕 💗</div>
+  </div>
+  <div id="door-stars" style="position:absolute;inset:0;pointer-events:none;z-index:9"></div>
+  <div class="door-flash" id="door-flash"></div>
+</div>
+
+<!-- remove below --><div style="display:none">
+  <div style="display:none">
+    <div class="gp gl">
+      <!-- Wisteria hanging from top -->
+      <div class="wisteria-row">
+        <div class="w-cluster"><span>🌸</span><span>🌸</span><span>🌸</span><span>💮</span><span>🌸</span></div>
+        <div class="w-cluster"><span>💮</span><span>🌸</span><span>🌸</span><span>🌸</span><span>💮</span><span>🌸</span></div>
+        <div class="w-cluster"><span>🌸</span><span>💮</span><span>🌸</span><span>🌸</span><span>🌸</span></div>
+        <div class="w-cluster"><span>🌷</span><span>🌸</span><span>💮</span><span>🌸</span><span>🌷</span><span>🌸</span></div>
+        <div class="w-cluster"><span>🌸</span><span>🌸</span><span>🌺</span><span>🌸</span></div>
+      </div>
+      <!-- Tall climbing columns (more & denser) -->
+      <div class="fcol" style="left:4%;height:80%">
+        <span style="animation-duration:3.2s;font-size:clamp(14px,2.6vw,28px)">🌸</span><span style="animation-duration:3.8s;animation-delay:.2s;font-size:clamp(10px,1.7vw,18px)">🌿</span>
+        <span style="animation-duration:3.5s;animation-delay:.5s;font-size:clamp(14px,2.4vw,26px)">🌺</span><span style="animation-duration:4s;animation-delay:.8s;font-size:clamp(10px,1.7vw,18px)">🌿</span>
+        <span style="animation-duration:3.3s;animation-delay:1.1s;font-size:clamp(12px,2vw,22px)">🌷</span><span style="animation-duration:3.7s;animation-delay:1.4s;font-size:clamp(10px,1.7vw,18px)">🌿</span>
+        <span style="animation-duration:4.1s;animation-delay:1.7s;font-size:clamp(14px,2.6vw,28px)">💮</span><span style="animation-duration:3.5s;animation-delay:2s;font-size:clamp(10px,1.7vw,18px)">🌿</span>
+        <span style="animation-duration:3.9s;animation-delay:2.3s;font-size:clamp(14px,2.4vw,26px)">🌸</span>
+      </div>
+      <div class="fcol" style="left:22%;height:88%">
+        <span style="animation-duration:4.2s;font-size:clamp(16px,2.9vw,32px)">🌺</span><span style="animation-duration:3.4s;animation-delay:.3s;font-size:clamp(10px,1.7vw,18px)">🌿</span>
+        <span style="animation-duration:3.9s;animation-delay:.7s;font-size:clamp(14px,2.4vw,26px)">🌸</span><span style="animation-duration:3.2s;animation-delay:1s;font-size:clamp(10px,1.7vw,18px)">🌿</span>
+        <span style="animation-duration:4.4s;animation-delay:1.3s;font-size:clamp(12px,2vw,22px)">🌷</span><span style="animation-duration:3.6s;animation-delay:1.6s;font-size:clamp(10px,1.7vw,18px)">🌿</span>
+        <span style="animation-duration:3.8s;animation-delay:1.9s;font-size:clamp(14px,2.6vw,28px)">💮</span><span style="animation-duration:4s;animation-delay:2.2s;font-size:clamp(10px,1.7vw,18px)">🌿</span>
+        <span style="animation-duration:3.3s;animation-delay:2.5s;font-size:clamp(16px,2.9vw,32px)">🌺</span>
+      </div>
+      <div class="fcol" style="left:42%;height:75%">
+        <span style="animation-duration:3.6s;font-size:clamp(14px,2.6vw,28px)">🌷</span><span style="animation-duration:4s;animation-delay:.4s;font-size:clamp(10px,1.7vw,18px)">🌿</span>
+        <span style="animation-duration:3.8s;animation-delay:.9s;font-size:clamp(14px,2.4vw,26px)">🌸</span><span style="animation-duration:3.4s;animation-delay:1.3s;font-size:clamp(10px,1.7vw,18px)">🌿</span>
+        <span style="animation-duration:4.3s;animation-delay:1.7s;font-size:clamp(12px,2vw,22px)">🌺</span><span style="animation-duration:3.7s;animation-delay:2.1s;font-size:clamp(10px,1.7vw,18px)">🌿</span>
+        <span style="animation-duration:3.5s;animation-delay:2.5s;font-size:clamp(14px,2.6vw,28px)">💮</span>
+      </div>
+      <div class="fcol" style="left:62%;height:65%">
+        <span style="animation-duration:3.9s;font-size:clamp(14px,2.6vw,28px)">🌸</span><span style="animation-duration:3.5s;animation-delay:.3s;font-size:clamp(10px,1.7vw,18px)">🌿</span>
+        <span style="animation-duration:4.1s;animation-delay:.7s;font-size:clamp(14px,2.4vw,26px)">🌺</span><span style="animation-duration:3.6s;animation-delay:1.1s;font-size:clamp(10px,1.7vw,18px)">🌿</span>
+        <span style="animation-duration:3.3s;animation-delay:1.5s;font-size:clamp(12px,2vw,22px)">🌷</span><span style="animation-duration:4.2s;animation-delay:1.9s;font-size:clamp(10px,1.7vw,18px)">🌿</span>
+      </div>
+      <div class="fcol" style="left:80%;height:55%">
+        <span style="animation-duration:4s;font-size:clamp(12px,2.2vw,24px)">💮</span><span style="animation-duration:3.6s;animation-delay:.4s;font-size:clamp(10px,1.7vw,18px)">🌿</span>
+        <span style="animation-duration:3.8s;animation-delay:.9s;font-size:clamp(12px,2.2vw,24px)">🌸</span><span style="animation-duration:4.3s;animation-delay:1.3s;font-size:clamp(10px,1.7vw,18px)">🌿</span>
+        <span style="animation-duration:3.5s;animation-delay:1.7s;font-size:clamp(12px,2.2vw,24px)">🌺</span>
+      </div>
+      <!-- Dense ground flower bed -->
+      <div class="gp-ground">
+        <span>🌸</span><span>🌺</span><span>🌷</span><span>💮</span><span>🌸</span><span>🌺</span><span>🌷</span><span>💮</span><span>🌸</span><span>🌺</span><span>🪴</span><span>🌷</span>
+      </div>
+      <div style="position:absolute;bottom:14%;left:15%;font-size:clamp(18px,3vw,34px);animation:gardenSway 5s ease-in-out infinite;z-index:6">🐱</div>
+    </div>
+
+    <!-- RIGHT GARDEN -->
+    <div class="gp gr">
+      <!-- Wisteria hanging from top -->
+      <div class="wisteria-row">
+        <div class="w-cluster"><span>🌸</span><span>🌸</span><span>🌺</span><span>🌸</span></div>
+        <div class="w-cluster"><span>💮</span><span>🌸</span><span>🌸</span><span>🌷</span><span>🌸</span></div>
+        <div class="w-cluster"><span>🌸</span><span>🌺</span><span>🌸</span><span>💮</span><span>🌸</span><span>🌸</span></div>
+        <div class="w-cluster"><span>🌷</span><span>🌸</span><span>🌸</span><span>💮</span><span>🌸</span></div>
+        <div class="w-cluster"><span>🌸</span><span>🌺</span><span>🌸</span><span>🌸</span><span>🌷</span></div>
+      </div>
+      <!-- Tall climbing columns -->
+      <div class="fcol" style="right:4%;height:80%">
+        <span style="animation-duration:3.9s;font-size:clamp(14px,2.6vw,28px)">🌺</span><span style="animation-duration:3.4s;animation-delay:.2s;font-size:clamp(10px,1.7vw,18px)">🌿</span>
+        <span style="animation-duration:4.2s;animation-delay:.5s;font-size:clamp(12px,2vw,22px)">🌷</span><span style="animation-duration:3.6s;animation-delay:.8s;font-size:clamp(10px,1.7vw,18px)">🌿</span>
+        <span style="animation-duration:4s;animation-delay:1.1s;font-size:clamp(14px,2.4vw,26px)">🌸</span><span style="animation-duration:3.5s;animation-delay:1.4s;font-size:clamp(10px,1.7vw,18px)">🌿</span>
+        <span style="animation-duration:3.3s;animation-delay:1.7s;font-size:clamp(12px,2vw,22px)">💮</span><span style="animation-duration:4.1s;animation-delay:2s;font-size:clamp(10px,1.7vw,18px)">🌿</span>
+        <span style="animation-duration:3.7s;animation-delay:2.3s;font-size:clamp(14px,2.6vw,28px)">🌺</span>
+      </div>
+      <div class="fcol" style="right:22%;height:88%">
+        <span style="animation-duration:4.4s;font-size:clamp(16px,2.9vw,32px)">🌸</span><span style="animation-duration:3.7s;animation-delay:.3s;font-size:clamp(10px,1.7vw,18px)">🌿</span>
+        <span style="animation-duration:3.9s;animation-delay:.7s;font-size:clamp(14px,2.4vw,26px)">🌺</span><span style="animation-duration:3.3s;animation-delay:1s;font-size:clamp(10px,1.7vw,18px)">🌿</span>
+        <span style="animation-duration:4.1s;animation-delay:1.3s;font-size:clamp(12px,2vw,22px)">🌷</span><span style="animation-duration:3.8s;animation-delay:1.6s;font-size:clamp(10px,1.7vw,18px)">🌿</span>
+        <span style="animation-duration:3.5s;animation-delay:1.9s;font-size:clamp(14px,2.6vw,28px)">💮</span><span style="animation-duration:4.2s;animation-delay:2.2s;font-size:clamp(10px,1.7vw,18px)">🌿</span>
+        <span style="animation-duration:3.6s;animation-delay:2.5s;font-size:clamp(16px,2.9vw,32px)">🌸</span>
+      </div>
+      <div class="fcol" style="right:42%;height:75%">
+        <span style="animation-duration:3.8s;font-size:clamp(14px,2.6vw,28px)">💮</span><span style="animation-duration:4s;animation-delay:.4s;font-size:clamp(10px,1.7vw,18px)">🌿</span>
+        <span style="animation-duration:3.6s;animation-delay:.9s;font-size:clamp(14px,2.4vw,26px)">🌸</span><span style="animation-duration:4.3s;animation-delay:1.3s;font-size:clamp(10px,1.7vw,18px)">🌿</span>
+        <span style="animation-duration:3.4s;animation-delay:1.7s;font-size:clamp(12px,2vw,22px)">🌺</span><span style="animation-duration:3.9s;animation-delay:2.1s;font-size:clamp(10px,1.7vw,18px)">🌿</span>
+        <span style="animation-duration:4.1s;animation-delay:2.5s;font-size:clamp(14px,2.6vw,28px)">🌷</span>
+      </div>
+      <div class="fcol" style="right:62%;height:65%">
+        <span style="animation-duration:3.7s;font-size:clamp(14px,2.6vw,28px)">🌷</span><span style="animation-duration:3.5s;animation-delay:.3s;font-size:clamp(10px,1.7vw,18px)">🌿</span>
+        <span style="animation-duration:4.2s;animation-delay:.7s;font-size:clamp(14px,2.4vw,26px)">💮</span><span style="animation-duration:3.6s;animation-delay:1.1s;font-size:clamp(10px,1.7vw,18px)">🌿</span>
+        <span style="animation-duration:3.9s;animation-delay:1.5s;font-size:clamp(12px,2vw,22px)">🌸</span><span style="animation-duration:4s;animation-delay:1.9s;font-size:clamp(10px,1.7vw,18px)">🌿</span>
+      </div>
+      <div class="fcol" style="right:80%;height:55%">
+        <span style="animation-duration:3.8s;font-size:clamp(12px,2.2vw,24px)">🌺</span><span style="animation-duration:3.6s;animation-delay:.4s;font-size:clamp(10px,1.7vw,18px)">🌿</span>
+        <span style="animation-duration:4.1s;animation-delay:.9s;font-size:clamp(12px,2.2vw,24px)">🌷</span><span style="animation-duration:3.4s;animation-delay:1.3s;font-size:clamp(10px,1.7vw,18px)">🌿</span>
+        <span style="animation-duration:4.3s;animation-delay:1.7s;font-size:clamp(12px,2.2vw,24px)">💮</span>
+      </div>
+      <!-- Dense ground flower bed -->
+      <div class="gp-ground" style="justify-content:flex-end">
+        <span>🌺</span><span>🌷</span><span>💮</span><span>🌸</span><span>🌺</span><span>🌷</span><span>🪴</span><span>💮</span><span>🌸</span><span>🌺</span><span>🌷</span><span>🌸</span>
+      </div>
+      <div style="position:absolute;bottom:14%;right:15%;font-size:clamp(18px,3vw,34px);animation:gardenSway 5s ease-in-out infinite;animation-delay:2s;z-index:6">😺</div>
+    </div>
+
+    <!-- DOOR -->
+    <div class="door-wrap">
+      <div class="door-vines lv">
+        <span style="animation-delay:0s">🌸</span><span style="animation-delay:.4s">🌿</span>
+        <span style="animation-delay:.8s">🌺</span><span style="animation-delay:1.2s">🌸</span>
+        <span style="animation-delay:1.6s">🌿</span><span style="animation-delay:2s">🌷</span>
+        <span style="animation-delay:2.4s">💮</span>
+      </div>
+      <div class="door-body" id="door-body">
+        <div class="door-glow" id="door-glow"></div>
+        <div class="door-pt"></div>
+        <div class="door-pb"></div>
+        <div class="door-knob"></div>
+        <div class="door-wreath">🌸🤍🌸</div>
+      </div>
+      <div class="door-vines rv">
+        <span style="animation-delay:.2s">🌺</span><span style="animation-delay:.6s">🌿</span>
+        <span style="animation-delay:1s">🌷</span><span style="animation-delay:1.4s">🌸</span>
+        <span style="animation-delay:1.8s">🌿</span><span style="animation-delay:2.2s">💮</span>
+        <span style="animation-delay:2.6s">🌺</span>
+      </div>
+    </div>
+
+    <div class="ds-sub" id="ds-sub">Something magical awaits you...</div>
+  </div>
+
+  <!-- Celebration message — outside door-scene so it's NOT scaled by the zoom -->
+  <div class="door-celebration" id="door-celebration">
+    <div id="dc-sparkles"></div>
+    <div class="dc-happy">Happy</div>
+    <div class="dc-main">1st Monthsary</div>
+    <div class="dc-love">My Love ♡</div>
+  </div>
+</div>
+
+<!-- ══════════════ MAIN SCREEN ══════════════ -->
+<div id="main-screen" class="screen">
+  <nav class="top-nav">
+    <div class="nav-logo">Ranz ♡ Kate 💕</div>
+    <div class="nav-tabs">
+      <button class="ntab active" data-tab="home">Home</button>
+      <button class="ntab" data-tab="gallery">Gallery</button>
+      <button class="ntab" data-tab="bouquet">💐 Bouquet</button>
+      <button class="ntab settings-btn" onclick="openSettings()" title="Settings">⚙️</button>
+    </div>
+    <span class="edit-badge" id="edit-badge">✏️ Editing</span>
+  </nav>
+
+  <div class="main-body">
+
+    <!-- HOME -->
+    <div class="tpanel active" id="tab-home">
+      <div class="hero">
+        <div class="hero-names">Ranz & Kate</div>
+        <div class="hero-sub">✨ Our First Monthsary ✨</div>
+        <div class="stats-row">
+          <div class="stat-card">
+            <span class="sn" id="s-days">—</span>
+            <span class="sl">Days Together</span>
+          </div>
+          <div class="stat-card">
+            <span class="sn" id="s-hours">—</span>
+            <span class="sl">Hours of Us</span>
+          </div>
+          <div class="stat-card">
+            <span class="sn">∞</span>
+            <span class="sl">Love for You</span>
+          </div>
+        </div>
+        <div class="love-letter">
+          <div class="ll-title">Dear Kate 🌸</div>
+          <div class="ll-body">
+            One month feels like both a heartbeat and a lifetime.
+            Every moment with you has been my favourite kind of magic —
+            the quiet kind that fills everything with warmth and light.
+            Thank you for being you, for being mine,
+            and for making every ordinary day feel like something worth remembering.
+            Here's to every moment still to come.
+            I love you, always. 💕
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GALLERY — Museum wall with 7 frames -->
+    <div class="tpanel" id="tab-gallery">
+      <div class="sec-h">Our Memories 📸</div>
+      <div class="museum-box">
+        <div class="msb-header">
+          <span class="msb-light"></span>
+          <span class="msb-title">Ranz &amp; Kate's Memories</span>
+          <span class="msb-light"></span>
+        </div>
+        <div class="msb-wall">
+
+          <!-- ROW 1 -->
+          <div class="msb-row">
+            <div class="g-wrap" data-slot="0">
+              <div class="g-frame gf-oval">
+                <div class="g-inner" id="gi-0"><div class="g-ph"><span>📷</span><span>Photo 1</span></div></div>
+                <div class="g-overlay" onclick="triggerUpload(0)">📷<br><small>Upload</small></div>
+              </div>
+              <input type="file" class="g-file" id="gf-0" accept="image/*" onchange="handleUpload(0,this)">
+            </div>
+            <div class="g-wrap" data-slot="1">
+              <div class="g-frame gf-arch">
+                <div class="g-inner" id="gi-1"><div class="g-ph"><span>📷</span><span>Photo 2</span></div></div>
+                <div class="g-overlay" onclick="triggerUpload(1)">📷<br><small>Upload</small></div>
+              </div>
+              <input type="file" class="g-file" id="gf-1" accept="image/*" onchange="handleUpload(1,this)">
+            </div>
+            <div class="g-wrap" data-slot="2">
+              <div class="g-frame gf-heart">
+                <div class="g-inner" id="gi-2"><div class="g-ph"><span>📷</span><span>Photo 3</span></div></div>
+                <div class="g-overlay" onclick="triggerUpload(2)">📷<br><small>Upload</small></div>
+              </div>
+              <input type="file" class="g-file" id="gf-2" accept="image/*" onchange="handleUpload(2,this)">
+            </div>
+          </div>
+
+          <!-- ROW 2 -->
+          <div class="msb-row">
+            <div class="g-wrap" data-slot="3">
+              <div class="g-frame gf-wide">
+                <div class="g-inner" id="gi-3"><div class="g-ph"><span>📷</span><span>Photo 4</span></div></div>
+                <div class="g-overlay" onclick="triggerUpload(3)">📷<br><small>Upload</small></div>
+              </div>
+              <input type="file" class="g-file" id="gf-3" accept="image/*" onchange="handleUpload(3,this)">
+            </div>
+            <div class="g-wrap" data-slot="4">
+              <div class="g-frame gf-circle">
+                <div class="g-inner" id="gi-4"><div class="g-ph"><span>📷</span><span>Photo 5</span></div></div>
+                <div class="g-overlay" onclick="triggerUpload(4)">📷<br><small>Upload</small></div>
+              </div>
+              <input type="file" class="g-file" id="gf-4" accept="image/*" onchange="handleUpload(4,this)">
+            </div>
+            <div class="g-wrap" data-slot="5">
+              <div class="g-frame gf-portrait">
+                <div class="g-inner" id="gi-5"><div class="g-ph"><span>📷</span><span>Photo 6</span></div></div>
+                <div class="g-overlay" onclick="triggerUpload(5)">📷<br><small>Upload</small></div>
+              </div>
+              <input type="file" class="g-file" id="gf-5" accept="image/*" onchange="handleUpload(5,this)">
+            </div>
+          </div>
+
+          <!-- ROW 3 — centered single frame -->
+          <div class="msb-row">
+            <div class="g-wrap" data-slot="6">
+              <div class="g-frame gf-oval-lg">
+                <div class="g-inner" id="gi-6"><div class="g-ph"><span>📷</span><span>Photo 7</span></div></div>
+                <div class="g-overlay" onclick="triggerUpload(6)">📷<br><small>Upload</small></div>
+              </div>
+              <input type="file" class="g-file" id="gf-6" accept="image/*" onchange="handleUpload(6,this)">
+            </div>
+          </div>
+
+          <!-- Figures on the floor -->
+          <div class="msb-figures">
+            <span>🐱</span>
+            <span style="font-size:1.6rem">👫</span>
+            <span>🐱</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOUQUET TAB -->
+    <div class="tpanel" id="tab-bouquet">
+      <div class="bq-page">
+        <!-- Hidden file input for bouquet image replacement -->
+        <input type="file" id="bouquet-file" accept="image/*" style="display:none" onchange="handleBouquetUpload(this)">
+
+        <div class="bq-art" id="bq-btn" onclick="bouquetClick()">
+          <div class="bouquet-title">For You, My Love 🌸</div>
+          <div class="bouquet-subtitle">A little something wrapped with all my love</div>
+          <div class="bouquet-frame-outer">
+            <div class="bouquet-frame-border">
+              <div class="bouquet-inner-corners">
+                <span class="corner-deco tl">✿</span>
+                <span class="corner-deco tr">✿</span>
+                <span class="corner-deco bl">✿</span>
+                <span class="corner-deco br">✿</span>
+              </div>
+            </div>
+            <div class="bouquet-image-wrapper">
+              <img id="bouquet-img"
+                src="bouquet.png"
+                alt="Pink Lily of the Valley Bouquet"
+                onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22380%22 height=%22460%22%3E%3Crect width=%22380%22 height=%22460%22 fill=%22%23ffd6e7%22/%3E%3Ctext x=%2250%25%22 y=%2248%25%22 text-anchor=%22middle%22 font-size=%22120%22 dy=%22.3em%22%3E%F0%9F%92%90%3C/text%3E%3Ctext x=%2250%25%22 y=%2278%25%22 text-anchor=%22middle%22 font-size=%2218%22 fill=%22%23c4356a%22 font-family=%22serif%22%3ESave bouquet.png here%3C/text%3E%3C/svg%3E'">
+              <div class="bouquet-glow"></div>
+            </div>
+          </div>
+          <div class="bouquet-interactive-hint" id="bq-hint">✨ Tap the bouquet for a surprise~ ✨</div>
+          <div class="bq-edit-hint" id="bq-edit-hint">📷 Tap to change bouquet image</div>
+
+          <!-- hidden SVG fallback — only used if bouquet.png missing AND JS strips it -->
+          <svg style="display:none" viewBox="0 0 1 1" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <radialGradient id="bqBell" cx="40%" cy="25%"><stop offset="0%" stop-color="#fff8ff"/><stop offset="60%" stop-color="#ffd6ef"/><stop offset="100%" stop-color="#ffadd8"/></radialGradient>
+              <linearGradient id="bqLeaf" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#78ba50"/><stop offset="100%" stop-color="#3a6e20"/></linearGradient>
+              <linearGradient id="bqPaper" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#ffc5d9"/><stop offset="35%" stop-color="#ffe0ee"/><stop offset="100%" stop-color="#ffadc8"/></linearGradient>
+              <radialGradient id="bqBow" cx="50%" cy="40%" r="60%"><stop offset="0%" stop-color="#ff85ad"/><stop offset="100%" stop-color="#c4356a"/></radialGradient>
+            </defs>
+            <!-- Leaves -->
+            <path d="M148,345 C118,295 72,240 78,175 C84,130 115,108 140,128 C158,143 162,175 158,210 C154,240 148,280 148,345" fill="url(#bqLeaf)" stroke="#2e5515" stroke-width="1.5"/>
+            <path d="M148,345 C132,295 110,245 112,195 C114,165 128,145 140,128" fill="none" stroke="#2e5515" stroke-width="0.7" opacity="0.5"/>
+            <path d="M152,345 C182,295 228,240 222,175 C216,130 185,108 160,128 C142,143 138,175 142,210 C146,240 152,280 152,345" fill="url(#bqLeaf)" stroke="#2e5515" stroke-width="1.5"/>
+            <path d="M152,345 C168,295 190,245 188,195 C186,165 172,145 160,128" fill="none" stroke="#2e5515" stroke-width="0.7" opacity="0.5"/>
+            <path d="M150,330 C140,280 138,230 142,180 C145,150 148,130 150,115 C152,130 155,150 158,180 C162,230 160,280 150,330" fill="#5a8c35" stroke="#2e5515" stroke-width="1" opacity="0.7"/>
+            <!-- Stems -->
+            <path d="M128,338 C124,295 120,250 123,205 C126,175 132,158 140,142" fill="none" stroke="#3e6820" stroke-width="2.2" stroke-linecap="round"/>
+            <path d="M137,340 C134,298 132,255 135,210 C138,178 143,158 148,138" fill="none" stroke="#3e6820" stroke-width="2.5" stroke-linecap="round"/>
+            <path d="M150,342 C149,298 148,252 149,205 C150,170 151,145 150,115" fill="none" stroke="#4a7c2a" stroke-width="2.8" stroke-linecap="round"/>
+            <path d="M163,340 C166,298 168,255 165,210 C162,178 157,158 152,138" fill="none" stroke="#3e6820" stroke-width="2.5" stroke-linecap="round"/>
+            <path d="M172,338 C176,295 180,250 177,205 C174,175 168,158 160,142" fill="none" stroke="#3e6820" stroke-width="2.2" stroke-linecap="round"/>
+            <!-- Bell flowers — far left stem -->
+            <g transform="translate(121,200)"><path d="M0,-1 C-7,-1 -8,11 0,14 C8,11 7,-1 0,-1" fill="url(#bqBell)" stroke="#ffadd8" stroke-width="0.7"/><circle cy="-1" r="2.5" fill="#fffde0"/></g>
+            <g transform="translate(120,182)"><path d="M0,-1 C-7,-1 -8,11 0,14 C8,11 7,-1 0,-1" fill="url(#bqBell)" stroke="#ffadd8" stroke-width="0.7"/><circle cy="-1" r="2.5" fill="#fffde0"/></g>
+            <g transform="translate(122,164)"><path d="M0,-1 C-6,-1 -7,10 0,13 C7,10 6,-1 0,-1" fill="url(#bqBell)" stroke="#ffadd8" stroke-width="0.7"/><circle cy="-1" r="2" fill="#fffde0"/></g>
+            <g transform="translate(128,148)"><path d="M0,-1 C-5,-1 -6,9 0,12 C6,9 5,-1 0,-1" fill="url(#bqBell)" stroke="#ffadd8" stroke-width="0.6"/><circle cy="-1" r="1.8" fill="#fffde0"/></g>
+            <!-- Bell flowers — left stem -->
+            <g transform="translate(133,205)"><path d="M0,-1 C-8,-1 -9,13 0,16 C9,13 8,-1 0,-1" fill="url(#bqBell)" stroke="#ffadd8" stroke-width="0.8"/><circle cy="-1" r="3" fill="#fffde0"/></g>
+            <g transform="translate(132,185)"><path d="M0,-1 C-8,-1 -9,13 0,16 C9,13 8,-1 0,-1" fill="url(#bqBell)" stroke="#ffadd8" stroke-width="0.8"/><circle cy="-1" r="3" fill="#fffde0"/></g>
+            <g transform="translate(133,165)"><path d="M0,-1 C-8,-1 -9,13 0,16 C9,13 8,-1 0,-1" fill="url(#bqBell)" stroke="#ffadd8" stroke-width="0.8"/><circle cy="-1" r="3" fill="#fffde0"/></g>
+            <g transform="translate(137,147)"><path d="M0,-1 C-7,-1 -8,11 0,14 C8,11 7,-1 0,-1" fill="url(#bqBell)" stroke="#ffadd8" stroke-width="0.7"/><circle cy="-1" r="2.5" fill="#fffde0"/></g>
+            <g transform="translate(141,130)"><path d="M0,-1 C-6,-1 -7,10 0,13 C7,10 6,-1 0,-1" fill="url(#bqBell)" stroke="#ffadd8" stroke-width="0.6"/><circle cy="-1" r="2" fill="#fffde0"/></g>
+            <!-- Bell flowers — center stem (tallest) -->
+            <g transform="translate(149,208)"><path d="M0,-1 C-9,-1 -10,14 0,17 C10,14 9,-1 0,-1" fill="url(#bqBell)" stroke="#ffadd8" stroke-width="0.9"/><circle cy="-1" r="3.2" fill="#fffde0"/></g>
+            <g transform="translate(149,186)"><path d="M0,-1 C-9,-1 -10,14 0,17 C10,14 9,-1 0,-1" fill="url(#bqBell)" stroke="#ffadd8" stroke-width="0.9"/><circle cy="-1" r="3.2" fill="#fffde0"/></g>
+            <g transform="translate(149,164)"><path d="M0,-1 C-9,-1 -10,14 0,17 C10,14 9,-1 0,-1" fill="url(#bqBell)" stroke="#ffadd8" stroke-width="0.9"/><circle cy="-1" r="3.2" fill="#fffde0"/></g>
+            <g transform="translate(149,143)"><path d="M0,-1 C-8,-1 -9,13 0,16 C9,13 8,-1 0,-1" fill="url(#bqBell)" stroke="#ffadd8" stroke-width="0.8"/><circle cy="-1" r="3" fill="#fffde0"/></g>
+            <g transform="translate(150,124)"><path d="M0,-1 C-7,-1 -8,12 0,15 C8,12 7,-1 0,-1" fill="url(#bqBell)" stroke="#ffadd8" stroke-width="0.7"/><circle cy="-1" r="2.5" fill="#fffde0"/></g>
+            <g transform="translate(150,107)"><path d="M0,-1 C-6,-1 -7,10 0,13 C7,10 6,-1 0,-1" fill="url(#bqBell)" stroke="#ffadd8" stroke-width="0.6"/><circle cy="-1" r="2" fill="#fffde0"/></g>
+            <ellipse cx="150" cy="97" rx="5" ry="9" fill="#ffe8f4" stroke="#ffadd8" stroke-width="0.8"/>
+            <!-- Bell flowers — right stem -->
+            <g transform="translate(167,205)"><path d="M0,-1 C-8,-1 -9,13 0,16 C9,13 8,-1 0,-1" fill="url(#bqBell)" stroke="#ffadd8" stroke-width="0.8"/><circle cy="-1" r="3" fill="#fffde0"/></g>
+            <g transform="translate(168,185)"><path d="M0,-1 C-8,-1 -9,13 0,16 C9,13 8,-1 0,-1" fill="url(#bqBell)" stroke="#ffadd8" stroke-width="0.8"/><circle cy="-1" r="3" fill="#fffde0"/></g>
+            <g transform="translate(167,165)"><path d="M0,-1 C-8,-1 -9,13 0,16 C9,13 8,-1 0,-1" fill="url(#bqBell)" stroke="#ffadd8" stroke-width="0.8"/><circle cy="-1" r="3" fill="#fffde0"/></g>
+            <g transform="translate(163,147)"><path d="M0,-1 C-7,-1 -8,11 0,14 C8,11 7,-1 0,-1" fill="url(#bqBell)" stroke="#ffadd8" stroke-width="0.7"/><circle cy="-1" r="2.5" fill="#fffde0"/></g>
+            <g transform="translate(159,130)"><path d="M0,-1 C-6,-1 -7,10 0,13 C7,10 6,-1 0,-1" fill="url(#bqBell)" stroke="#ffadd8" stroke-width="0.6"/><circle cy="-1" r="2" fill="#fffde0"/></g>
+            <!-- Bell flowers — far right stem -->
+            <g transform="translate(179,200)"><path d="M0,-1 C-7,-1 -8,11 0,14 C8,11 7,-1 0,-1" fill="url(#bqBell)" stroke="#ffadd8" stroke-width="0.7"/><circle cy="-1" r="2.5" fill="#fffde0"/></g>
+            <g transform="translate(180,182)"><path d="M0,-1 C-7,-1 -8,11 0,14 C8,11 7,-1 0,-1" fill="url(#bqBell)" stroke="#ffadd8" stroke-width="0.7"/><circle cy="-1" r="2.5" fill="#fffde0"/></g>
+            <g transform="translate(178,164)"><path d="M0,-1 C-6,-1 -7,10 0,13 C7,10 6,-1 0,-1" fill="url(#bqBell)" stroke="#ffadd8" stroke-width="0.7"/><circle cy="-1" r="2" fill="#fffde0"/></g>
+            <g transform="translate(172,148)"><path d="M0,-1 C-5,-1 -6,9 0,12 C6,9 5,-1 0,-1" fill="url(#bqBell)" stroke="#ffadd8" stroke-width="0.6"/><circle cy="-1" r="1.8" fill="#fffde0"/></g>
+            <!-- Paper wrap -->
+            <path d="M90,320 L75,415 L225,415 L210,320 Z" fill="url(#bqPaper)" opacity="0.88"/>
+            <path d="M110,320 L96,414" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="2.5"/>
+            <path d="M140,320 L133,414" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
+            <path d="M190,320 L204,414" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="2"/>
+            <path d="M90,320 L210,320" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/>
+            <!-- Ribbon tails -->
+            <path d="M150,390 C138,400 120,408 108,420" stroke="#e8527a" stroke-width="6" stroke-linecap="round" fill="none"/>
+            <path d="M150,390 C162,400 180,408 192,420" stroke="#e8527a" stroke-width="6" stroke-linecap="round" fill="none"/>
+            <!-- Bow loops -->
+            <path d="M150,388 C132,368 108,364 103,376 C98,388 116,398 150,388" fill="url(#bqBow)" stroke="#c4356a" stroke-width="1.2"/>
+            <path d="M138,375 C128,372 115,374 112,378" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="1.5"/>
+            <path d="M150,388 C168,368 192,364 197,376 C202,388 184,398 150,388" fill="url(#bqBow)" stroke="#c4356a" stroke-width="1.2"/>
+            <path d="M162,375 C172,372 185,374 188,378" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="1.5"/>
+            <ellipse cx="150" cy="388" rx="13" ry="11" fill="#c4356a" stroke="#8b1a3e" stroke-width="1"/>
+            <ellipse cx="147" cy="385" rx="5" ry="4" fill="rgba(255,255,255,0.28)"/>
+            <!-- Tag -->
+            <line x1="150" y1="396" x2="150" y2="403" stroke="#c4356a" stroke-width="1"/>
+            <circle cx="150" cy="397" r="2" fill="none" stroke="#c4356a" stroke-width="0.8"/>
+            <rect x="122" y="403" width="56" height="26" rx="4" fill="#fff8f0" stroke="rgba(196,53,106,0.35)" stroke-width="1"/>
+            <text x="150" y="416" text-anchor="middle" fill="#c4356a" font-size="8.5" font-family="Georgia,serif" font-style="italic" font-weight="bold">♡ For You</text>
+            <!-- Sparkles -->
+            <g transform="translate(80,165)" opacity="0.7"><line x1="0" y1="-8" x2="0" y2="8" stroke="#ffd6e7" stroke-width="1.5"/><line x1="-8" y1="0" x2="8" y2="0" stroke="#ffd6e7" stroke-width="1.5"/><line x1="-5" y1="-5" x2="5" y2="5" stroke="#ffd6e7" stroke-width="1"/><line x1="5" y1="-5" x2="-5" y2="5" stroke="#ffd6e7" stroke-width="1"/></g>
+            <g transform="translate(222,180)" opacity="0.65"><line x1="0" y1="-7" x2="0" y2="7" stroke="#ffd6e7" stroke-width="1.5"/><line x1="-7" y1="0" x2="7" y2="0" stroke="#ffd6e7" stroke-width="1.5"/><line x1="-4" y1="-4" x2="4" y2="4" stroke="#ffd6e7" stroke-width="1"/><line x1="4" y1="-4" x2="-4" y2="4" stroke="#ffd6e7" stroke-width="1"/></g>
+            <g transform="translate(95,240)" opacity="0.5"><line x1="0" y1="-5" x2="0" y2="5" stroke="#ffd6e7" stroke-width="1.2"/><line x1="-5" y1="0" x2="5" y2="0" stroke="#ffd6e7" stroke-width="1.2"/></g>
+            <g transform="translate(210,250)" opacity="0.5"><line x1="0" y1="-5" x2="0" y2="5" stroke="#ffd6e7" stroke-width="1.2"/><line x1="-5" y1="0" x2="5" y2="0" stroke="#ffd6e7" stroke-width="1.2"/></g>
+            <!-- Hearts -->
+            <text x="68" y="160" font-size="14" fill="#ffb3d9" opacity="0.6" font-family="serif">♡</text>
+            <text x="228" y="175" font-size="12" fill="#ffd6e7" opacity="0.5" font-family="serif">♡</text>
+            <text x="78" y="280" font-size="10" fill="#ffb3d9" opacity="0.4" font-family="serif">♡</text>
+            <text x="218" y="260" font-size="11" fill="#ffd6e7" opacity="0.4" font-family="serif">♡</text>
+          </svg>
+        </div>
+        <!-- hint is now inside bq-art -->
+      </div>
+    </div>
+
+  </div><!-- /main-body -->
+</div><!-- /main-screen -->
+
+<!-- ══════════ LOVE LETTER MODAL ══════════ -->
+<div class="modal-wrap" id="letter-modal">
+  <div class="modal-overlay" onclick="closeLetter()"></div>
+  <div class="letter-card" id="letter-card">
+    <div class="letter-deco">🌸 💕 🌸</div>
+    <div class="letter-to">Dear Kate,</div>
+    <div class="letter-body">
+      One month. It doesn't sound like much, but with you,
+      every single day has felt like a gift I didn't know I was waiting for.
+      <br><br>
+      You make ordinary moments feel magical.
+      Your laugh is my favourite sound.
+      Your presence is my favourite place.
+      <br><br>
+      I don't know what I did to deserve you,
+      but I'm going to spend every day making sure you never doubt
+      how loved you truly are.
+      <br><br>
+      Thank you for being mine.
+      Here's to forever. 🌸
+    </div>
+    <div class="letter-sign">Forever yours, Ranz 💕</div>
+    <button class="letter-close-btn" onclick="closeLetter()">Close 💌</button>
+  </div>
+</div>
+
+<!-- ══════════ SETTINGS MODAL ══════════ -->
+<div class="modal-wrap" id="settings-modal">
+  <div class="modal-overlay" onclick="closeSettings()"></div>
+  <div class="settings-card">
+    <div class="sc-title">⚙️ Settings</div>
+
+    <!-- Edit Mode toggle -->
+    <div class="sc-section">
+      <div class="sc-section-label">✏️ Edit Mode</div>
+      <div class="sc-section-desc">Turn on to upload photos &amp; change the bouquet image.</div>
+      <button class="sc-edit-toggle" id="sc-edit-toggle" onclick="toggleEditMode()">Enable Edit Mode</button>
+    </div>
+
+    <div class="sc-divider"></div>
+
+    <!-- Change PIN -->
+    <div class="sc-section-label">🔐 Change PIN</div>
+    <div class="sc-field">
+      <label>Current PIN</label>
+      <input type="password" id="cp-current" maxlength="4" placeholder="· · · ·" inputmode="numeric">
+    </div>
+    <div class="sc-field">
+      <label>New PIN</label>
+      <input type="password" id="cp-new" maxlength="4" placeholder="· · · ·" inputmode="numeric">
+    </div>
+    <div class="sc-field">
+      <label>Confirm New PIN</label>
+      <input type="password" id="cp-confirm" maxlength="4" placeholder="· · · ·" inputmode="numeric">
+    </div>
+    <div class="sc-err" id="sc-err"></div>
+    <div class="sc-ok"  id="sc-ok"></div>
+    <button class="sc-btn" onclick="changePin()">Update PIN</button>
+    <button class="sc-cancel" onclick="closeSettings()">Cancel</button>
+  </div>
+</div>
+
+<!-- ══════════ PHOTO LIGHTBOX ══════════ -->
+<div class="modal-wrap" id="photo-lightbox">
+  <div class="modal-overlay" onclick="closeLightbox()"></div>
+  <div class="lb-content">
+    <img id="lb-img" src="" alt="">
+    <button class="lb-close" onclick="closeLightbox()">✕</button>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
