@@ -1,8 +1,13 @@
 // ─── SUPABASE ───
-const SUPABASE_URL = 'https://eofgwpdvffzngcmahris.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVvZmd3cGR2ZmZ6bmdjbWFocmlzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAzNzg5NTgsImV4cCI6MjA5NTk1NDk1OH0.qoMsoLFjEAIEKUl6j6Ml8-7Zper8kNkEu5a9dduq5os';
+const SB_URL = 'https://eofgwpdvffzngcmahris.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVvZmd3cGR2ZmZ6bmdjbWFocmlzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAzNzg5NTgsImV4cCI6MjA5NTk1NDk1OH0.qoMsoLFjEAIEKUl6j6Ml8-7Zper8kNkEu5a9dduq5os';
 let sb = null;
-try { sb = supabase.createClient(SB_URL, SB_KEY); } catch(e) {}
+try {
+  sb = supabase.createClient(SB_URL, SB_KEY);
+  console.log('✅ Supabase client ready');
+} catch(e) {
+  console.error('❌ Supabase init failed:', e);
+}
 
 // ─── IndexedDB (photos stored as Blobs + PIN) ───
 const DB = {
@@ -357,10 +362,18 @@ function toggleEditMode() {
 
 // ─── Supabase storage upload ───
 async function uploadFileToStorage(file, path) {
-  const { error } = await sb.storage.from('monthsary-photos').upload(path, file, { upsert: true });
-  if (error) throw error;
-  const { data } = sb.storage.from('monthsary-photos').getPublicUrl(path);
-  return data.publicUrl;
+  console.log('📤 Uploading to storage:', path);
+  const { data, error } = await sb.storage.from('monthsary-photos').upload(path, file, {
+    upsert: true,
+    contentType: file.type || 'image/jpeg',
+  });
+  if (error) {
+    console.error('❌ Storage upload error:', error);
+    throw new Error(error.message || JSON.stringify(error));
+  }
+  console.log('✅ Storage upload success:', data);
+  const { data: urlData } = sb.storage.from('monthsary-photos').getPublicUrl(path);
+  return urlData.publicUrl;
 }
 
 // ─── Toast notification ───
@@ -435,10 +448,11 @@ async function handleUpload(slot, input) {
       setFramePhoto(slot, publicUrl);
       showToast('Photo saved to Supabase ✓');
     } catch(e) {
-      console.error('Supabase upload error:', e);
-      showToast('Saved locally (check Supabase config)');
+      console.error('❌ Gallery upload error:', e);
+      showToast('Upload failed: ' + (e.message || 'check console'));
     }
   } else {
+    console.warn('⚠️ Supabase not connected — saved locally only');
     showToast('Saved locally ✓');
   }
 }
@@ -490,8 +504,8 @@ async function handleBouquetUpload(input) {
       setBouquetImage(publicUrl);
       showToast('Bouquet saved to Supabase ✓');
     } catch(e) {
-      console.error('Bouquet upload error:', e);
-      showToast('Saved locally (check Supabase config)');
+      console.error('❌ Bouquet upload error:', e);
+      showToast('Upload failed: ' + (e.message || 'check console'));
     }
   } else {
     showToast('Bouquet saved locally ✓');
